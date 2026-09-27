@@ -304,5 +304,58 @@ async function createPayment() {
 
   }
 }
+</script><!-- PAYMENT DELIVERY PAGE -->
+<script>
+(function () {
+
+  const params = new URLSearchParams(window.location.search);
+  const order = params.get("order");
+
+  if (!order) return;
+
+  const worker =
+    "https://aivyl-payment.aliawan353575.workers.dev/delivery";
+
+  const box = document.getElementById("status");
+
+  if (!box) return;
+
+  box.innerHTML = "Checking payment...";
+
+  fetch(worker + "?order=" + encodeURIComponent(order))
+    .then(response => response.json())
+    .then(data => {
+
+      if (data.success && data.downloadUrl) {
+
+        box.innerHTML =
+          "<p>✅ Payment verified.</p>" +
+          "<p>Your product is ready.</p>" +
+          "<a href='" + data.downloadUrl + "'" +
+          " target='_blank'" +
+          " rel='noopener noreferrer'" +
+          " style='display:inline-block;padding:14px 22px;background:#fff;color:#000;text-decoration:none;border-radius:8px;font-weight:bold;'>" +
+          "Download Your Product →" +
+          "</a>";
+
+      } else {
+
+        box.innerHTML =
+          "<p>Payment has not been verified yet.</p>" +
+          "<p>Please wait for payment confirmation.</p>";
+
+      }
+
+    })
+    .catch(error => {
+
+      console.error(error);
+
+      box.innerHTML =
+        "<p>Unable to check payment status.</p>";
+
+    });
+
+})();
 </script></body>
 </html>
